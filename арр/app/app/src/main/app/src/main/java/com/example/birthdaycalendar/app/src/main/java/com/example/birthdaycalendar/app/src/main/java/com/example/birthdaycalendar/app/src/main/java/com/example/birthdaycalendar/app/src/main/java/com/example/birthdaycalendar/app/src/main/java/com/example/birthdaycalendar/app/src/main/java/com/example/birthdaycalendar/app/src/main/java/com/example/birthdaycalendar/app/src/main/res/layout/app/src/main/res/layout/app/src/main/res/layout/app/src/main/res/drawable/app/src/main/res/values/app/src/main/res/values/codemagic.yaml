@@ -1,0 +1,21 @@
+workflows:
+  android-workflow:
+    name: Birthday Calendar Build
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      java: 17
+      android_signing:
+        - birthday_key
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      - name: Grant execute permission for gradlew
+        script: |
+          chmod +x gradlew || true
+      - name: Build Release APK
+        script: |
+          ./gradlew assembleRelease --no-daemon
+    artifacts:
+      - app/build/outputs/apk/release/*.apk
